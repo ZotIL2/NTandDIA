@@ -3,5 +3,13 @@
     "java.project.referencedLibraries": [
         "lib/**/*.jar",
         "c:\\Program Files\\MySQL\\MySQL Connector J\\mysql-connector-j-8.1.0.jar"
-    ]
+    ],
+    "java.project.sourcePaths": [
+        "lab5/src/main/com/ontu/lab5",
+        "Lab3/src",
+        "lab5"
+    ],
+    "java.compile.nullAnalysis.mode": "automatic",
+    "java.jdt.ls.vmargs": "-XX:+UseParallelGC -XX:GCTimeRatio=4 -XX:AdaptiveSizePolicyWeight=90 -Dsun.zip.disableMemoryMapping=true -Xmx2G -Xms100m -Xlog:disable",
+    "java.configuration.updateBuildConfiguration": "interactive"
 }
