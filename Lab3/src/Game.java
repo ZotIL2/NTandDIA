@@ -1,7 +1,28 @@
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.sql.*;
+import java.util.Arrays;
+import java.util.Base64;
 
 
 class Game {
+   public static String encode(String password) {
+        // Создаем хэш-объект
+        MessageDigest digest;
+        try {
+            digest = MessageDigest.getInstance("SHA-512");
+        } catch (NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
+
+        // Хешируем пароль
+        byte[] hash = digest.digest(password.getBytes());
+
+        // Возвращаем зашифрованный пароль в Base64-формате
+        return Base64.getEncoder().encodeToString(hash);
+    }
+
+
     public void gameBody(GameField field1, Player player1, Player player2) {
         field1.printField();
         while (!field1.isWinner(player1.getSymbol()) || !field1.isWinner(player2.getSymbol())) {
@@ -48,6 +69,7 @@ class Game {
     }
 
     public boolean Register() {
+        
         String username, password;
         System.out.print("Please register for play\n");
         System.out.print("Input a username: ");
@@ -65,7 +87,7 @@ class Game {
                     String sql = " insert into users (username, password)" + " values (?, ?)";
                     PreparedStatement preparedStmt = con.prepareStatement(sql);
                     preparedStmt.setString(1, username);
-                    preparedStmt.setString(2, password);
+                    preparedStmt.setString(2, encode(password));
                     preparedStmt.execute();
                     System.out.print("Register success!\n");
                 }
@@ -77,16 +99,17 @@ class Game {
     }
 
     public boolean Login() {
-        String username, password;
+        String username, password,passwordHash;
         System.out.print("Please Login for play\n");
         System.out.print("Input a username: ");
         username = System.console().readLine();
         System.out.print("Input a password: ");
         password = System.console().readLine();
+        passwordHash = encode(password);
         try {
             Statement stmt = con.createStatement();
             ResultSet rs = stmt.executeQuery(
-                    "SELECT count(*) FROM users WHERE username='" + username + "' and password='" + password + "';");
+                    "SELECT count(*) FROM users WHERE username='" + username + "' and password='" + passwordHash + "';");
             while (rs.next())
                 if (rs.getInt(1) == 1) {
                     return true;
